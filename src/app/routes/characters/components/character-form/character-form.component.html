@@ -1,0 +1,44 @@
+<form (ngSubmit)="submit$.next()" [formGroup]="form" nz-form>
+  <nz-form-item>
+    <nz-form-label nzRequired [nzSpan]="6" nzFor="name">Name</nz-form-label>
+    <nz-form-control [nzSpan]="14">
+      <input
+        formControlName="name"
+        nz-input
+        name="name"
+        type="text"
+        id="name"
+      />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired [nzSpan]="6" nzFor="power">Power</nz-form-label>
+    <nz-form-control [nzSpan]="14">
+      <input
+        formControlName="power"
+        nz-input
+        name="power"
+        type="text"
+        id="power"
+      />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired [nzSpan]="6" nzFor="race">Race</nz-form-label>
+    <nz-form-control [nzSpan]="14">
+      <nz-select formControlName="race" id="race" name="race">
+        @for(race of characterRaceValues; track race.value) {
+        <nz-option [nzValue]="race.value" [nzLabel]="race.name"></nz-option>
+        }
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control
+      [nzXs]="{ span: 24, offset: 0 }"
+      [nzSm]="{ span: 20, offset: 4 }"
+    >
+      <button nz-button nzType="primary" type="submit">Save</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

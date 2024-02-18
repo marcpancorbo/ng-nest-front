@@ -1,0 +1,32 @@
+<article class="h-full flex flex-col xl:flex-row gap-5">
+  <section class="grow flex flex-col min-w-[50%] gap-2">
+    <nav class="p-3 bg-white">
+      <ul class="list-none flex gap-2 items-center">
+        <li>
+          <button (click)="createCharacter()" nz-button nzType="primary">Create</button>
+        </li>
+        <li>
+          <button
+            nzDanger
+            (click)="deleteCharacter()"
+            nz-button
+            nzType="primary"
+          >
+            Delete
+          </button>
+        </li>
+        <li></li>
+      </ul>
+    </nav>
+    <ag-grid-angular
+      class="ag-theme-quartz grow h-[300px]"
+      [rowData]="$characters()"
+      [columnDefs]="colDef"
+      [rowSelection]="'single'"
+      (gridReady)="onGridReady($event)"
+      (rowDoubleClicked)="navigateToDetail($event.data)"
+      (modelUpdated)="onModelUpdated()"
+    ></ag-grid-angular>
+  </section>
+  <router-outlet></router-outlet>
+</article>

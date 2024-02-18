@@ -1,1 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
+/* Core Grid CSS */
+@import "ag-grid-community/styles/ag-grid.css";
+@import "ag-grid-community/styles/ag-theme-quartz.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0 auto;
+  height: 100dvh;
+  font-family: "Inter", sans-serif;
+  background-color: #1e1e1e;
+}
+app-character {
+  flex-grow: 1;
+  min-width: 50%;
+}
