@@ -28,19 +28,18 @@
     <nz-form-control [nzSpan]="14" nzErrorTip="Race is required">
       <nz-select formControlName="race" id="race" name="race">
         @for(race of characterRaceLabels | keyvalue; track race.key) {
-        <nz-option [nzValue]="race.key" [nzLabel]="race.value"></nz-option>
+        <nz-option [nzValue]="+race.key" [nzLabel]="race.value"></nz-option>
         }
       </nz-select>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-label nzRequired [nzSpan]="6" nzFor="race">Race</nz-form-label>
+    <nz-form-label [nzSpan]="6" nzFor="image">Image</nz-form-label>
     <nz-form-control [nzSpan]="14">
       <nz-upload
         [(nzFileList)]="fileList"
         [nzBeforeUpload]="beforeUpload"
         (nzChange)="handleChange($event)"
-        formControlName="image"
       >
         <button nz-button type="button">
           <span nz-icon nzType="upload"></span>

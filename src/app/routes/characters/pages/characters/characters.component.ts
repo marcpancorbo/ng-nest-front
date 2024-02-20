@@ -23,7 +23,7 @@ import { CharacterFormComponent } from '../../components/character-form/characte
 export class CharactersComponent {
   $characters: WritableSignal<Character[]> = signal([]);
   colDef: ColDef[] = this.charactersColConfigService.charactersColumns;
-  gridApi: GridApi;
+  gridApi: GridApi | null;
   constructor(
     private readonly destroy$: AutoDestroyService,
     private readonly charactersService: CharactersService,
@@ -55,6 +55,21 @@ export class CharactersComponent {
   onModelUpdated(): void {
     this.gridApi?.sizeColumnsToFit();
   }
+  editCharacter(): void {
+    const selectedNodes = this.gridApi?.getSelectedNodes() || [];
+    if (selectedNodes.length === 1) {
+      this.modalService.create({
+        nzTitle: 'Edit Character',
+        nzContent: CharacterFormComponent,
+        nzMaskClosable: false,
+        nzFooter: null,
+        nzData: selectedNodes[0].data,
+        nzOnOk: () => this.getCharacters(),
+      });
+    } else {
+      this.messageService.error('Please select a character to edit');
+    }
+  }
   createCharacter(): void {
     this.modalService.create({
       nzTitle: 'Create Character',
@@ -65,7 +80,7 @@ export class CharactersComponent {
     });
   }
   deleteCharacter(): void {
-    const selectedNodes = this.gridApi.getSelectedNodes();
+    const selectedNodes = this.gridApi?.getSelectedNodes() || [];
     if (selectedNodes.length === 1) {
       this.modalService.confirm({
         nzTitle: 'Are you sure you want to delete this character?',
@@ -89,4 +104,6 @@ export class CharactersComponent {
   navigateToDetail(character: Character): void {
     this.router.navigate([character.id], { relativeTo: this.route });
   }
+
+  onSelectionChanged(): void {}
 }

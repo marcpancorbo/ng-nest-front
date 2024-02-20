@@ -3,7 +3,16 @@
     <nav class="p-3 bg-white">
       <ul class="list-none flex gap-2 items-center">
         <li>
-          <button (click)="createCharacter()" nz-button nzType="primary">Create</button>
+          @if (gridApi?.getSelectedNodes()?.length === 1){
+          <button (click)="editCharacter()" nz-button nzType="primary">
+            Edit
+          </button>
+
+          }@else {
+          <button (click)="createCharacter()" nz-button nzType="primary">
+            Create
+          </button>
+          }
         </li>
         <li>
           <button
@@ -24,6 +33,7 @@
       [columnDefs]="colDef"
       [rowSelection]="'single'"
       (gridReady)="onGridReady($event)"
+      (selectionChanged)="onSelectionChanged()"
       (rowDoubleClicked)="navigateToDetail($event.data)"
       (modelUpdated)="onModelUpdated()"
     ></ag-grid-angular>

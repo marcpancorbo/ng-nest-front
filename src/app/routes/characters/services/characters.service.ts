@@ -24,12 +24,24 @@ export class CharactersService extends BaseApiService {
     return super.delete(`/${id}`);
   }
 
-  create(character: Character, image: NzUploadFile): Observable<Character> {
+  create(character: Character, image?: NzUploadFile): Observable<Character> {
     const formData = new FormData();
-    formData.append('image', image as unknown as File, image.name);
+    if (image) {
+      formData.append('image', image as unknown as File, image.name);
+    }
     formData.append('name', character.name);
     formData.append('power', character.power.toString());
     formData.append('race', character.race.toString());
     return super.post('', formData);
+  }
+  update(character: Character, image?: NzUploadFile): Observable<Character> {
+    const formData = new FormData();
+    if (image) {
+      formData.append('image', image as unknown as File, image.name);
+    }
+    formData.append('name', character.name);
+    formData.append('power', character.power.toString());
+    formData.append('race', character.race.toString());
+    return super.put('', formData);
   }
 }

@@ -1,5 +1,5 @@
 import { KeyValuePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -10,7 +10,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { Subject, exhaustMap, filter, takeUntil, tap } from 'rxjs';
 import {
@@ -43,12 +43,9 @@ import {
   styleUrl: './character-form.component.scss',
 })
 export class CharacterFormComponent implements OnInit {
+  character: Character | null = null;
   fileList: NzUploadFile[] = [];
-  form: FormGroup = this.fb.group({
-    name: ['', [Validators.required]],
-    power: [25, [Validators.required, Validators.min(0), Validators.max(100)]],
-    race: [CharacterRace.Saiyan, [Validators.required]],
-  });
+  form: FormGroup = this.fb.group({});
   characterRaceLabels = characterRaceLabels;
   submit$: Subject<void> = new Subject<void>();
   beforeUpload = (file: NzUploadFile): boolean => {
@@ -60,11 +57,26 @@ export class CharacterFormComponent implements OnInit {
     private readonly destroy$: AutoDestroyService,
     private readonly charactersService: CharactersService,
     private readonly modal: NzModalRef,
-    private readonly messageService: NzMessageService
+    private readonly messageService: NzMessageService,
+    @Inject(NZ_MODAL_DATA) private readonly data: Character
   ) {}
 
   ngOnInit(): void {
+    this.character = this.data;
+    this.initForm(this.character);
     this.subscribeToSubmit();
+  }
+
+  initForm(character?: Character) {
+    this.form = this.fb.group({
+      name: [character?.name ?? '', [Validators.required]],
+      power: [
+        character?.power ?? 25,
+        [Validators.required, Validators.min(0), Validators.max(100)],
+      ],
+      race: [character?.race ?? CharacterRace.Saiyan, [Validators.required]],
+    });
+    console.log(this.form);
   }
 
   handleChange(upload: NzUploadChangeParam): void {
@@ -85,9 +97,19 @@ export class CharacterFormComponent implements OnInit {
           console.log('submitting form');
           console.log(this.fileList);
         }),
-        exhaustMap(() =>
-          this.charactersService.create(this.form.value, this.fileList[0])
-        ),
+        exhaustMap(() => {
+          if (this.character?.id) {
+            return this.charactersService.update(
+              this.form.value,
+              this.fileList[0]
+            );
+          } else {
+            return this.charactersService.create(
+              this.form.value,
+              this.fileList[0]
+            );
+          }
+        }),
         takeUntil(this.destroy$)
       )
       .subscribe((character: Character) => {
