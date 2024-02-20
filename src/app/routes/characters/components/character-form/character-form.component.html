@@ -1,7 +1,7 @@
 <form (ngSubmit)="submit$.next()" [formGroup]="form" nz-form>
   <nz-form-item>
     <nz-form-label nzRequired [nzSpan]="6" nzFor="name">Name</nz-form-label>
-    <nz-form-control [nzSpan]="14">
+    <nz-form-control [nzSpan]="14" nzErrorTip="Name is required">
       <input
         formControlName="name"
         nz-input
@@ -13,7 +13,7 @@
   </nz-form-item>
   <nz-form-item>
     <nz-form-label nzRequired [nzSpan]="6" nzFor="power">Power</nz-form-label>
-    <nz-form-control [nzSpan]="14">
+    <nz-form-control [nzSpan]="14" nzErrorTip="Power is required">
       <input
         formControlName="power"
         nz-input
@@ -25,12 +25,28 @@
   </nz-form-item>
   <nz-form-item>
     <nz-form-label nzRequired [nzSpan]="6" nzFor="race">Race</nz-form-label>
-    <nz-form-control [nzSpan]="14">
+    <nz-form-control [nzSpan]="14" nzErrorTip="Race is required">
       <nz-select formControlName="race" id="race" name="race">
-        @for(race of characterRaceValues; track race.value) {
-        <nz-option [nzValue]="race.value" [nzLabel]="race.name"></nz-option>
+        @for(race of characterRaceLabels | keyvalue; track race.key) {
+        <nz-option [nzValue]="race.key" [nzLabel]="race.value"></nz-option>
         }
       </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired [nzSpan]="6" nzFor="race">Race</nz-form-label>
+    <nz-form-control [nzSpan]="14">
+      <nz-upload
+        [(nzFileList)]="fileList"
+        [nzBeforeUpload]="beforeUpload"
+        (nzChange)="handleChange($event)"
+        formControlName="image"
+      >
+        <button nz-button type="button">
+          <span nz-icon nzType="upload"></span>
+          Click to Upload
+        </button>
+      </nz-upload>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>

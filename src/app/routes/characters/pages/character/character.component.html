@@ -1,5 +1,10 @@
 <article>
   <div class="flex flex-col gap-3 p-3 bg-white text-black">
+    <img
+      class="w-32 h-32 rounded-full"
+      src="{{ $character()?.imageUrl }}"
+      alt="{{ $character()?.name }}"
+    />
     <h1 class="text-5xl font-bold">{{ $character()?.name }}</h1>
     <span>{{ $character()?.id }}</span>
   </div>

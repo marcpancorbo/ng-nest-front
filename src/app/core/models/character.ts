@@ -5,4 +5,5 @@ export interface Character {
   name: string;
   race: CharacterRace;
   power: number;
+  imageUrl: string;
 }

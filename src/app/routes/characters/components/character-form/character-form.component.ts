@@ -1,3 +1,4 @@
+import { KeyValuePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -8,17 +9,22 @@ import {
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalRef } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { Subject, exhaustMap, filter, takeUntil, tap } from 'rxjs';
 import {
   CharacterRace,
-  characterRaceValues,
+  characterRaceLabels,
 } from '../../../../core/enums/character-race';
-import { Subject, exhaustMap, filter, takeUntil } from 'rxjs';
+import { Character } from '../../../../core/models/character';
 import { AutoDestroyService } from '../../../../core/services/utils/auto-destroy.service';
 import { CharactersService } from '../../services/characters.service';
-import { Character } from '../../../../core/models/character';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { NzMessageService } from 'ng-zorro-antd/message';
+import {
+  NzUploadChangeParam,
+  NzUploadFile,
+  NzUploadModule,
+} from 'ng-zorro-antd/upload';
 
 @Component({
   selector: 'app-character-form',
@@ -29,20 +35,26 @@ import { NzMessageService } from 'ng-zorro-antd/message';
     NzInputModule,
     NzSelectModule,
     NzButtonModule,
+    KeyValuePipe,
+    NzUploadModule,
   ],
   providers: [AutoDestroyService],
   templateUrl: './character-form.component.html',
   styleUrl: './character-form.component.scss',
 })
 export class CharacterFormComponent implements OnInit {
+  fileList: NzUploadFile[] = [];
   form: FormGroup = this.fb.group({
     name: ['', [Validators.required]],
     power: [25, [Validators.required, Validators.min(0), Validators.max(100)]],
     race: [CharacterRace.Saiyan, [Validators.required]],
   });
-  characterRaceValues = characterRaceValues;
+  characterRaceLabels = characterRaceLabels;
   submit$: Subject<void> = new Subject<void>();
-
+  beforeUpload = (file: NzUploadFile): boolean => {
+    this.fileList = this.fileList.concat(file);
+    return false;
+  };
   constructor(
     private readonly fb: FormBuilder,
     private readonly destroy$: AutoDestroyService,
@@ -55,11 +67,27 @@ export class CharacterFormComponent implements OnInit {
     this.subscribeToSubmit();
   }
 
+  handleChange(upload: NzUploadChangeParam): void {
+    if (upload.file.status !== 'uploading') {
+      console.log(upload.file, upload.fileList);
+    }
+    if (upload.file.status === 'done') {
+      console.log(`${upload.file.name} file uploaded successfully`);
+    } else if (upload.file.status === 'error') {
+      console.error(`${upload.file.name} file upload failed.`);
+    }
+  }
   subscribeToSubmit(): void {
     this.submit$
       .pipe(
         filter(() => this.form.valid),
-        exhaustMap(() => this.charactersService.create(this.form.value)),
+        tap(() => {
+          console.log('submitting form');
+          console.log(this.fileList);
+        }),
+        exhaustMap(() =>
+          this.charactersService.create(this.form.value, this.fileList[0])
+        ),
         takeUntil(this.destroy$)
       )
       .subscribe((character: Character) => {
