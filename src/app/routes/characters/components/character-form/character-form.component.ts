@@ -12,19 +12,21 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
-import { Subject, exhaustMap, filter, takeUntil, tap } from 'rxjs';
+import {
+  NzUploadChangeParam,
+  NzUploadFile,
+  NzUploadModule,
+} from 'ng-zorro-antd/upload';
+import { Subject, exhaustMap, filter, takeUntil } from 'rxjs';
 import {
   CharacterRace,
   characterRaceLabels,
 } from '../../../../core/enums/character-race';
 import { Character } from '../../../../core/models/character';
 import { AutoDestroyService } from '../../../../core/services/utils/auto-destroy.service';
+import { CharacterDetailService } from '../../services/character-detail.service';
+import { CharacterValidationService } from '../../services/character-validation.service';
 import { CharactersService } from '../../services/characters.service';
-import {
-  NzUploadChangeParam,
-  NzUploadFile,
-  NzUploadModule,
-} from 'ng-zorro-antd/upload';
 
 @Component({
   selector: 'app-character-form',
@@ -58,6 +60,8 @@ export class CharacterFormComponent implements OnInit {
     private readonly charactersService: CharactersService,
     private readonly modal: NzModalRef,
     private readonly messageService: NzMessageService,
+    private readonly characterDetailService: CharacterDetailService,
+    private readonly characterValidationService: CharacterValidationService,
     @Inject(NZ_MODAL_DATA) private readonly data: Character
   ) {}
 
@@ -69,14 +73,17 @@ export class CharacterFormComponent implements OnInit {
 
   initForm(character?: Character) {
     this.form = this.fb.group({
-      name: [character?.name ?? '', [Validators.required]],
+      name: [
+        character?.name ?? '',
+        [Validators.required],
+        [this.characterValidationService.existsCharacter(this.character?.id)],
+      ],
       power: [
         character?.power ?? 25,
         [Validators.required, Validators.min(0), Validators.max(100)],
       ],
       race: [character?.race ?? CharacterRace.Saiyan, [Validators.required]],
     });
-    console.log(this.form);
   }
 
   handleChange(upload: NzUploadChangeParam): void {
@@ -93,13 +100,10 @@ export class CharacterFormComponent implements OnInit {
     this.submit$
       .pipe(
         filter(() => this.form.valid),
-        tap(() => {
-          console.log('submitting form');
-          console.log(this.fileList);
-        }),
         exhaustMap(() => {
           if (this.character?.id) {
             return this.charactersService.update(
+              this.character.id,
               this.form.value,
               this.fileList[0]
             );
@@ -116,6 +120,7 @@ export class CharacterFormComponent implements OnInit {
         this.messageService.success(
           `Character ${character.name} created successfully`
         );
+        this.characterDetailService.updateCharacter(character);
         this.modal.triggerOk();
       });
   }

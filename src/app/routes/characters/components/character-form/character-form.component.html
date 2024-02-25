@@ -1,7 +1,7 @@
 <form (ngSubmit)="submit$.next()" [formGroup]="form" nz-form>
   <nz-form-item>
     <nz-form-label nzRequired [nzSpan]="6" nzFor="name">Name</nz-form-label>
-    <nz-form-control [nzSpan]="14" nzErrorTip="Name is required">
+    <nz-form-control [nzSpan]="14" [nzErrorTip]="nameErrorTpl">
       <input
         formControlName="name"
         nz-input
@@ -10,10 +10,18 @@
         id="name"
       />
     </nz-form-control>
+    <ng-template #nameErrorTpl let-control>
+      @if (control.errors?.['required']) {
+        Name is required
+      }
+      @if (control.errors?.['exists']) {
+        Name is already taken
+      }
+    </ng-template>
   </nz-form-item>
   <nz-form-item>
     <nz-form-label nzRequired [nzSpan]="6" nzFor="power">Power</nz-form-label>
-    <nz-form-control [nzSpan]="14" nzErrorTip="Power is required">
+    <nz-form-control [nzSpan]="14" [nzErrorTip]="powerErrorTpl">
       <input
         formControlName="power"
         nz-input
@@ -22,6 +30,17 @@
         id="power"
       />
     </nz-form-control>
+    <ng-template #powerErrorTpl let-control>
+      @if (control.errors?.['required']) {
+        Power is required
+      }
+      @if (control.errors?.['max']) {
+        Power can't be greater than {{ control.errors?.['max'].max }}
+      }
+      @if (control.errors?.['min']) {
+        Power can't be less than {{ control.errors?.['min'].min }}
+      }
+    </ng-template>
   </nz-form-item>
   <nz-form-item>
     <nz-form-label nzRequired [nzSpan]="6" nzFor="race">Race</nz-form-label>

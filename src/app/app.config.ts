@@ -3,14 +3,15 @@ import { provideRouter, withViewTransitions } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { NZ_DATE_LOCALE, NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
+import { authInterceptor } from './core/inteceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideAnimations(),
     provideRouter(routes, withViewTransitions()),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
     { provide: NZ_I18N, useValue: en_US },
     { provide: NZ_DATE_LOCALE, useValue: en_US },
   ],

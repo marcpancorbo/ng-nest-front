@@ -14,6 +14,7 @@ export class CharactersColConfigService {
       field: 'id',
       sortable: true,
       filter: true,
+      checkboxSelection: true,
     },
     {
       headerName: 'Name',

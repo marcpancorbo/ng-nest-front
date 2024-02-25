@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { BaseApiService } from '../../../core/models/base-api-service';
 import { Character } from '../../../core/models/character';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +35,11 @@ export class CharactersService extends BaseApiService {
     formData.append('race', character.race.toString());
     return super.post('', formData);
   }
-  update(character: Character, image?: NzUploadFile): Observable<Character> {
+  update(
+    id: string,
+    character: Character,
+    image?: NzUploadFile
+  ): Observable<Character> {
     const formData = new FormData();
     if (image) {
       formData.append('image', image as unknown as File, image.name);
@@ -42,6 +47,14 @@ export class CharactersService extends BaseApiService {
     formData.append('name', character.name);
     formData.append('power', character.power.toString());
     formData.append('race', character.race.toString());
-    return super.put('', formData);
+    return super.put(`/${id}`, formData);
+  }
+
+  exists(name: string, id?: string): Observable<boolean> {
+    let params = new HttpParams();
+    if (id) {
+      params = params.set('id', id);
+    }
+    return super.get(`/exists/${name}`, { params });
   }
 }
