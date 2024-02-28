@@ -1,12 +1,18 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { User } from '../models/user';
+import { AuthService } from '../services/common/auth.service';
+import { inject } from '@angular/core';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authService: AuthService = inject(AuthService);
   return next(
     (req = req.clone({
-      headers: req.headers.set(
-        'Authorization',
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjOWU4OTBiYi1jNmJkLTQzYmEtYTBmYi00OGYxOTQ3OGIxOGIiLCJ1c2VybmFtZSI6Ik1hcmMiLCJlbWFpbCI6InByb2dyYW1hcmNkZXZAZ21haWwuY29tIiwiaWF0IjoxNzA4ODc5NzEzfQ.oRD7-isJbLlG_uUBe9G-_e0lCHOlaLVDE5hN6Uym_2M'
-      ),
+      headers: authService.$user()
+        ? req.headers.set(
+            'Authorization',
+            `Bearer ${authService.$user()?.access_token}`
+          )
+        : req.headers,
     }))
   );
 };

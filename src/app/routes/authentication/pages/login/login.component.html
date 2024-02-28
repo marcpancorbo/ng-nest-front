@@ -1,0 +1,43 @@
+<article>
+  <form
+    nz-form
+    (ngSubmit)="submitted$.next()"
+    [formGroup]="form"
+    class="flex flex-col p-4"
+  >
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSpan]="6" nzFor="name"
+        >Username</nz-form-label
+      >
+      <nz-form-control [nzSpan]="14" [nzErrorTip]="nameErrorTpl">
+        <input
+          formControlName="username"
+          placeholder="Username"
+          nz-input
+          type="text"
+        />
+      </nz-form-control>
+      <ng-template #nameErrorTpl let-control>
+        @if (control.errors?.['required']) { Username is required }
+      </ng-template>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSpan]="6" nzFor="name"
+        >Password</nz-form-label
+      >
+      <nz-form-control [nzSpan]="14" [nzErrorTip]="passwordErrorTpl">
+        <input
+          formControlName="password"
+          placeholder="Password"
+          nz-input
+          type="password"
+        />
+      </nz-form-control>
+      <ng-template #passwordErrorTpl let-control>
+        @if (control.errors?.['required']) { Password is required }
+      </ng-template>
+    </nz-form-item>
+
+    <button nz-button type="submit">Login</button>
+  </form>
+</article>
