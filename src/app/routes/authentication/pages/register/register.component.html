@@ -53,6 +53,14 @@
         @if (control.errors?.['required']) { Password is required }
       </ng-template>
     </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSpan]="6" nzFor="name">Role</nz-form-label>
+      <nz-select formControlName="role">
+        @for(role of userRoles | keyvalue; track role.key) {
+        <nz-option [nzValue]="role.key" [nzLabel]="role.value"></nz-option>
+        }
+      </nz-select>
+    </nz-form-item>
 
     <button nz-button type="submit">Register</button>
   </form>

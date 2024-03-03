@@ -1,26 +1,33 @@
-<article class="h-full flex flex-col xl:flex-row gap-5">
-  <section class="grow flex flex-col min-w-[50%] gap-2">
-    <nav class="p-3 bg-white">
-      <ul class="list-none flex gap-2 items-center">
+<article class="flex h-full flex-col gap-5 xl:flex-row">
+  <section class="flex min-w-[50%] grow flex-col gap-2">
+    <nav class="bg-white p-3">
+      <ul class="flex list-none items-center gap-2">
         <li>
-          @if (gridApi?.getSelectedNodes()?.length === 1){
-          <button (click)="editCharacter()" nz-button nzType="primary">
-            Edit
-          </button>
-
-          }@else {
-          <button (click)="createCharacter()" nz-button nzType="primary">
-            Create
-          </button>
+          @if (gridApi?.getSelectedNodes()?.length === 1) {
+            <button
+              [disabled]="!$isAdmin()"
+              (click)="editCharacter()"
+              nz-button
+              nzType="primary">
+              Edit
+            </button>
+          } @else {
+            <button
+              [disabled]="!$isAdmin()"
+              (click)="createCharacter()"
+              nz-button
+              nzType="primary">
+              Create
+            </button>
           }
         </li>
         <li>
           <button
+            [disabled]="!$isAdmin()"
             nzDanger
             (click)="deleteCharacter()"
             nz-button
-            nzType="primary"
-          >
+            nzType="primary">
             Delete
           </button>
         </li>
@@ -28,15 +35,14 @@
       </ul>
     </nav>
     <ag-grid-angular
-      class="ag-theme-quartz grow h-[300px]"
+      class="ag-theme-quartz h-[300px] grow"
       [rowData]="$characters()"
       [columnDefs]="colDef"
       [rowSelection]="'single'"
       (gridReady)="onGridReady($event)"
       (selectionChanged)="onSelectionChanged()"
       (rowDoubleClicked)="navigateToDetail($event.data)"
-      (modelUpdated)="onModelUpdated()"
-    ></ag-grid-angular>
+      (modelUpdated)="onModelUpdated()"></ag-grid-angular>
   </section>
   <router-outlet></router-outlet>
 </article>

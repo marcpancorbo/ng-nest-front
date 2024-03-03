@@ -1,20 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Subject, exhaustMap, filter, switchMap, takeUntil } from 'rxjs';
-import { AutoDestroyService } from '../../../../core/services/utils/auto-destroy.service';
-import { AuthService } from '../../../../core/services/common/auth.service';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzFormModule } from 'ng-zorro-antd/form';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { Subject, exhaustMap, filter, takeUntil } from 'rxjs';
 import { User } from '../../../../core/models/user';
-
+import { AuthService } from '../../../../core/services/common/auth.service';
+import { AutoDestroyService } from '../../../../core/services/utils/auto-destroy.service';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -29,7 +29,8 @@ export class LoginComponent implements OnInit {
     password: ['', [Validators.required]],
   });
   submitted$: Subject<void> = new Subject<void>();
-
+  $loading: Signal<boolean> = this.authService.$loading;
+  loading$ = toObservable(this.$loading);
   constructor(
     private readonly fb: FormBuilder,
     private readonly authService: AuthService,

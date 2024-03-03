@@ -37,7 +37,6 @@
         @if (control.errors?.['required']) { Password is required }
       </ng-template>
     </nz-form-item>
-
-    <button nz-button type="submit">Login</button>
+    <button [nzLoading]="$loading()" nz-button type="submit">Login</button>
   </form>
 </article>

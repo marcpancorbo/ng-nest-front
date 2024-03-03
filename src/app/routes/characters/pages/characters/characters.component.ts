@@ -1,4 +1,10 @@
-import { Component, WritableSignal, signal } from '@angular/core';
+import {
+  Component,
+  Signal,
+  WritableSignal,
+  computed,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi } from 'ag-grid-community';
@@ -11,6 +17,9 @@ import { AutoDestroyService } from '../../../../core/services/utils/auto-destroy
 import { CharactersColConfigService } from '../../services/characters-col-config.service';
 import { CharactersService } from '../../services/characters.service';
 import { CharacterFormComponent } from '../../components/character-form/character-form.component';
+import { AuthService } from '../../../../core/services/common/auth.service';
+import { User } from '../../../../core/models/user';
+import { UserRole } from '../../../../core/enums/user-roles';
 
 @Component({
   selector: 'app-characters',
@@ -22,6 +31,9 @@ import { CharacterFormComponent } from '../../components/character-form/characte
 })
 export class CharactersComponent {
   $characters: WritableSignal<Character[]> = signal([]);
+  $isAdmin: Signal<boolean> = computed(
+    () => this.authService.$user()?.role === UserRole.Admin
+  );
   colDef: ColDef[] = this.charactersColConfigService.charactersColumns;
   gridApi: GridApi | null;
   constructor(
@@ -31,7 +43,8 @@ export class CharactersComponent {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly modalService: NzModalService,
-    private readonly messageService: NzMessageService
+    private readonly messageService: NzMessageService,
+    private readonly authService: AuthService
   ) {}
   ngOnInit(): void {}
 

@@ -6,4 +6,7 @@ export interface Character {
   race: CharacterRace;
   power: number;
   imageUrl: string;
+  createdBy: string;
+  createdOn: Date;
+  updatedOn: Date;
 }

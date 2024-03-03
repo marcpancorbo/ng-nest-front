@@ -4,6 +4,7 @@ import {
   CharacterRace,
   characterRaceLabels,
 } from '../../../core/enums/character-race';
+import { DatePipe } from '@angular/common';
 @Injectable({
   providedIn: 'root',
 })
@@ -36,6 +37,26 @@ export class CharactersColConfigService {
       sortable: true,
       filter: true,
     },
+    {
+      headerName: 'Created by',
+      field: 'createdBy',
+    },
+    {
+      headerName: 'Created on',
+      field: 'createdOn',
+      valueFormatter: (params) =>
+        params.value
+          ? this.datePipe.transform(params.value, 'dd.MM.yyyy HH:mm:ss') || ''
+          : '',
+    },
+    {
+      headerName: 'Updated on',
+      field: 'updatedOn',
+      valueFormatter: (params) =>
+        params.value
+          ? this.datePipe.transform(params.value, 'dd.MM.yyyy HH:mm:ss') || ''
+          : '',
+    },
   ];
-  constructor() {}
+  constructor(private readonly datePipe: DatePipe) {}
 }

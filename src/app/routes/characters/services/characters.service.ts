@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable, catchError } from 'rxjs';
 import { BaseApiService } from '../../../core/models/base-api-service';
 import { Character } from '../../../core/models/character';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
@@ -33,7 +33,7 @@ export class CharactersService extends BaseApiService {
     formData.append('name', character.name);
     formData.append('power', character.power.toString());
     formData.append('race', character.race.toString());
-    return super.post('', formData);
+    return super.post<Character>('', formData).pipe(catchError(() => EMPTY));
   }
   update(
     id: string,
@@ -47,7 +47,11 @@ export class CharactersService extends BaseApiService {
     formData.append('name', character.name);
     formData.append('power', character.power.toString());
     formData.append('race', character.race.toString());
-    return super.put(`/${id}`, formData);
+    return super.put<Character>(`/${id}`, formData).pipe(
+      catchError(() => {
+        return EMPTY;
+      })
+    );
   }
 
   exists(name: string, id?: string): Observable<boolean> {

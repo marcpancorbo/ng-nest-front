@@ -8,6 +8,7 @@ import { NZ_DATE_LOCALE, NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { authInterceptor } from './core/inteceptors/auth.interceptor';
 import { AuthService } from './core/services/common/auth.service';
 import { User } from './core/models/user';
+import { DatePipe } from '@angular/common';
 
 export function loadUser(authService: AuthService) {
   return () => {
@@ -32,5 +33,6 @@ export const appConfig: ApplicationConfig = {
       multi: true,
       deps: [AuthService],
     },
+    DatePipe,
   ],
 };

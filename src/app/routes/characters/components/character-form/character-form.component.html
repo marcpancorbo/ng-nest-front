@@ -11,10 +11,10 @@
       />
     </nz-form-control>
     <ng-template #nameErrorTpl let-control>
-      @if (control.errors?.['required']) {
+      @if (control.errors?.["required"]) {
         Name is required
       }
-      @if (control.errors?.['exists']) {
+      @if (control.errors?.["exists"]) {
         Name is already taken
       }
     </ng-template>
@@ -31,14 +31,14 @@
       />
     </nz-form-control>
     <ng-template #powerErrorTpl let-control>
-      @if (control.errors?.['required']) {
+      @if (control.errors?.["required"]) {
         Power is required
       }
-      @if (control.errors?.['max']) {
-        Power can't be greater than {{ control.errors?.['max'].max }}
+      @if (control.errors?.["max"]) {
+        Power can't be greater than {{ control.errors?.["max"].max }}
       }
-      @if (control.errors?.['min']) {
-        Power can't be less than {{ control.errors?.['min'].min }}
+      @if (control.errors?.["min"]) {
+        Power can't be less than {{ control.errors?.["min"].min }}
       }
     </ng-template>
   </nz-form-item>
@@ -46,8 +46,8 @@
     <nz-form-label nzRequired [nzSpan]="6" nzFor="race">Race</nz-form-label>
     <nz-form-control [nzSpan]="14" nzErrorTip="Race is required">
       <nz-select formControlName="race" id="race" name="race">
-        @for(race of characterRaceLabels | keyvalue; track race.key) {
-        <nz-option [nzValue]="+race.key" [nzLabel]="race.value"></nz-option>
+        @for (race of characterRaceLabels | keyvalue; track race.key) {
+          <nz-option [nzValue]="+race.key" [nzLabel]="race.value"></nz-option>
         }
       </nz-select>
     </nz-form-control>
